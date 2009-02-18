@@ -44,6 +44,7 @@ module ScaffoldingExtensions
   TEMPLATE_DIR = File.join(ROOT, "scaffolds")
   DEFAULT_METHODS = [:manage, :show, :delete, :edit, :new, :search, :merge, :browse]
   MODEL_SUPERCLASSES = []
+  EXCLUDED_MODEL_FILES = []
   
   @auto_complete_skip_style = false
     
@@ -53,7 +54,7 @@ module ScaffoldingExtensions
 
     def all_models
       return @all_models if @all_models
-      possible_models = model_files.collect{|file|File.basename(file).sub(/\.rb\z/, '')}.collect{|m| m.camelize.constantize}
+      possible_models = (model_files.collect { |file| File.basename(file, '.rb') } - EXCLUDED_MODEL_FILES).collect { |m| m.camelize.constantize }
       possible_models.reject{|m| MODEL_SUPERCLASSES.reject{|klass| !m.ancestors.include?(klass)}.length == 0}
     end
 
